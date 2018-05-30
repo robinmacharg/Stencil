@@ -9,7 +9,7 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
-    let bits = token.characters.split(separator: "|").map({ String($0).trim(character: " ") })
+    let bits = token.split(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
       filters = []
       variable = Variable("")
@@ -52,7 +52,7 @@ public struct Variable : Equatable, Resolvable {
 
   // Split the lookup string and resolve references if possible
   fileprivate func lookup(_ context: Context) throws -> [String] {
-    var keyPath = KeyPath(variable, in: context)
+    let keyPath = KeyPath(variable, in: context)
     return try keyPath.parse()
   }
 
@@ -62,7 +62,7 @@ public struct Variable : Equatable, Resolvable {
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
-      return String(variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)])
+      return String(variable[variable.startIndex ..< variable.endIndex])
     }
 
     // Number literal
